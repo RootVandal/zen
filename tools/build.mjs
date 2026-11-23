@@ -10,12 +10,12 @@ const { LINKS, PRICES, HONESTY, WORKS, STEPS, FAQ, CODE } = await import(pathToF
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const fill = (s, lang) => s.replaceAll('{request}', LINKS.request[lang]).replaceAll('{telegram}', LINKS.telegram);
-const nb = (s) => s.replace(/(\d) (\d)/g, '$1&nbsp;$2');
+const nb = (s) => s.replace(/(\d) (\d)/g, '$1&nbsp;$2').replace(/(^|[\s(«])(в|во|о|об|на|с|со|к|и|а|из|от|до|по|за|для|не)\s/giu, '$1$2&nbsp;');
 const tierRu = {
   landing: 'Лендинг · 12&nbsp;000&nbsp;₸',
   '3d': '3D-сайт · от 30&nbsp;000&nbsp;₸',
   business: 'Бизнес-сайт · от 40&nbsp;000&nbsp;₸',
-  complex: 'Сложный проект · цена индивидуально',
+  complex: 'Сложный проект · цена обсуждается',
 };
 const byKey = Object.fromEntries(WORKS.map((w) => [w.key, w]));
 const KANJI_N = ['一', '二', '三', '四', '五', '六', '七', '八'];
@@ -29,11 +29,10 @@ function works() {
       : '';
     const cutAttrs = w.cut.type === 'ink'
       ? `data-cut="ink" data-angle="${w.cut.angle}"`
-      : `data-cut="noren" data-noren="${w.cut.kanji}"`;
+      : `data-cut="noren"`;
     return `
   <article class="work ${side}" id="work-${w.key}" data-key="${w.key}" ${cutAttrs} aria-labelledby="w-${w.key}-h">
     <div class="work__stage">
-      <span class="work__ghost" aria-hidden="true">${w.kanji}</span>
       <div class="work__art">
         <a class="bframe" href="${w.url}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true" data-cursor-label>
           <span class="bframe__bar"><i></i><i></i><i></i><span class="bframe__url">${esc(w.host)}</span></span>
@@ -42,10 +41,10 @@ function works() {
         <span class="pframe" aria-hidden="true"><img src="assets/shots/${w.key}-m.webp" width="450" height="973" alt="" loading="lazy" decoding="async"></span>
       </div>
       <div class="work__text">
-        <p class="work__num"><span data-i18n="work.label">Работа</span> ${nn}&thinsp;/&thinsp;${String(WORKS.length).padStart(2, '0')} <span class="jp" aria-hidden="true">第${KANJI_N[i]}図</span></p>
+        <p class="work__num"><span data-i18n="work.label">Работа</span> ${nn}&thinsp;/&thinsp;${String(WORKS.length).padStart(2, '0')}</p>
         <h3 class="work__title" id="w-${w.key}-h">${esc(w.title)}</h3>
         <p class="work__kind" data-i18n="w.${w.key}.kind">${esc(w.kind.ru)}</p>
-        <p class="work__desc" data-i18n="w.${w.key}.desc">${esc(w.desc.ru)}</p>
+        <p class="work__desc" data-i18n="w.${w.key}.desc">${nb(esc(w.desc.ru))}</p>
         <ul class="chips">
           <li><a class="chip chip--tier" href="#price-${w.tier}" data-i18n="tier.${w.tier}">${tierRu[w.tier]}</a></li>${hon}
         </ul>
@@ -65,20 +64,20 @@ function prices() {
     const exLabel = p.examples.length > 1 ? 'p.examples' : 'p.example';
     const exRu = p.examples.length > 1 ? 'Примеры:' : 'Пример:';
     const items = (p.items?.ru || []).map((t, i) =>
-      `<li><span data-i18n="p.${p.id}.i${i}">${esc(t)}</span></li>`).join('');
+      `<li><span data-i18n="p.${p.id}.i${i}">${nb(esc(t))}</span></li>`).join('');
     const sum = p.complex
       ? `<p class="price__sum price__sum--text" data-i18n="p.${p.id}.sum">${esc(p.priceText.ru)}</p>
-          <p class="price__approx" data-i18n="p.${p.id}.lead">${esc(p.lead.ru)}</p>`
+          <p class="price__approx" data-i18n="p.${p.id}.lead">${nb(esc(p.lead.ru))}</p>`
       : `<p class="price__sum" data-i18n="p.${p.id}.sum">${p.from ? '<span class="price__from">от</span> ' : ''}<span class="price__num">${nb(p.price.ru)}</span>&nbsp;<span class="cur">₸</span></p>
           <p class="price__approx" data-i18n="p.${p.id}.approx">${nb(p.approx.ru)}</p>`;
     const cta = p.complex
-      ? `<a class="btn btn--red price__cta" href="${LINKS.telegram}"><span class="face" data-i18n="p.discuss">Обсудить в Telegram</span></a>`
-      : `<a class="btn btn--red price__cta" href="${LINKS.request.ru}" data-href-ru="${LINKS.request.ru}" data-href-en="${LINKS.request.en}"><span class="face" data-i18n="p.order">Заказать</span></a>`;
+      ? `<a class="btn btn--red price__cta" href="${LINKS.telegram}" target="_blank" rel="noopener"><span class="face" data-i18n="p.discuss">Обсудить в Telegram</span></a>
+        <a class="price__alt" href="${LINKS.request.ru}" data-href-ru="${LINKS.request.ru}" data-href-en="${LINKS.request.en}" target="_blank" rel="noopener" data-i18n="cta.request">Оставить заявку</a>`
+      : `<a class="btn btn--red price__cta" href="${LINKS.request.ru}" target="_blank" rel="noopener" data-href-ru="${LINKS.request.ru}" data-href-en="${LINKS.request.en}"><span class="face" data-i18n="p.order">Заказать</span></a>`;
     return `
     <article class="price${p.complex ? ' price--ink' : ''}" id="price-${p.id}" aria-labelledby="p-${p.id}-h">
       <div class="price__face">
         <div class="price__blade" aria-hidden="true" style="--len:${p.blade}"><svg viewBox="0 0 1200 120"><use href="#katana"/></svg></div>
-        <span class="price__seal" aria-hidden="true">${p.seal}</span>
         <h3 class="price__name" id="p-${p.id}-h" data-i18n="p.${p.id}.name">${esc(p.name.ru)}</h3>
         ${sum}
         ${items ? `<ul class="price__list">${items}</ul>` : ''}
@@ -92,10 +91,10 @@ function prices() {
 function steps() {
   return STEPS.map((st, i) => `
       <li class="step" id="step-${i + 1}">
-        <span class="step__num" aria-hidden="true">${st.seal}</span>
+        <span class="step__num" aria-hidden="true">0${i + 1}</span>
         <div class="step__text">
           <p class="step__label"><span data-i18n="step.label">Шаг</span> ${i + 1}</p>
-          <p class="step__line" data-i18n="s.${i + 1}">${fill(st.ru, 'ru')}</p>
+          <p class="step__line" data-i18n="s.${i + 1}">${nb(fill(st.ru, 'ru'))}</p>
         </div>
       </li>`).join('');
 }
@@ -103,10 +102,10 @@ function steps() {
 function code() {
   return CODE.map((c, i) => `
       <article class="code__item">
-        <span class="code__k" aria-hidden="true">${c.kanji}</span>
+        <span class="code__k" aria-hidden="true">0${i + 1}</span>
         <p class="code__label" data-i18n="c.${i + 1}.k">${esc(c.k.ru)}</p>
         <h3 class="code__h" data-i18n="c.${i + 1}.h">${esc(c.h.ru)}</h3>
-        <p class="code__t" data-i18n="c.${i + 1}.t">${esc(c.t.ru)}</p>
+        <p class="code__t" data-i18n="c.${i + 1}.t">${nb(esc(c.t.ru))}</p>
       </article>`).join('');
 }
 
@@ -126,8 +125,8 @@ function sprite() {
     let s = readFileSync(join(dir, f), 'utf8');
     s = s.replace(/<\?xml[^>]*>/g, '').replace(/<!--[\s\S]*?-->/g, '');
     const inner = s.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
-    // yonkoma panels are inlined into the process steps instead
-    const cleaned = inner.replace(/<symbol[^>]*id="yk-\d"[\s\S]*?<\/symbol>/g, '');
+    // the ink ridges ship as assets/ridges*.webp: cheaper to clone and cut than the vector
+    const cleaned = inner.replace(/<symbol id="ridges"[\s\S]*?<\/symbol>/, '');
     parts.push(`<!-- ${f} -->\n${cleaned.trim()}`);
   }
   return `<svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">\n${parts.join('\n')}\n</svg>`;
@@ -141,12 +140,5 @@ for (const [name, fn] of Object.entries(blocks)) {
   if (!re.test(page)) { console.warn('marker missing:', name); continue; }
   page = page.replace(re, (_, a, b) => `${a}${fn()}\n${b}`);
 }
-// load only the brush glyphs the page uses (Yuji Mai subset)
-const cjk = new Set();
-const textOnly = page.replace(/<svg class="sprite"[\s\S]*?<\/svg>/, '');
-for (const ch of textOnly + readFileSync(join(root, 'js/data.js'), 'utf8')) {
-  if (/[぀-ヿ㐀-鿿]/.test(ch)) cjk.add(ch);
-}
-page = page.replace(/(family=Yuji\+Mai&display=swap&text=)[^"]*/, (_, a) => a + encodeURIComponent([...cjk].sort().join('')));
 writeFileSync(html, page);
 console.log('index.html updated');

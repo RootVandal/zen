@@ -32,6 +32,7 @@ export const EN = {
   'cover.lead': 'We take projects from Kazakhstan, the CIS and around the world.',
   'cover.kicker': 'Website studio · Almaty',
   'cover.hint': 'Scroll',
+  'cover.prices': 'Landing page — 12,000&nbsp;KZT · 3D website — from 30,000&nbsp;KZT · business website — from 40,000&nbsp;KZT',
   'tag.aria': 'Prices: from 12,000 KZT',
   'tag.from': 'from',
   'tag.num': '12,000',
@@ -62,7 +63,7 @@ export const EN = {
   'work.open': 'Open site',
   'work.full': 'Full page',
   'prices.line': 'A website from 12,000&nbsp;KZT',
-  'prices.note': 'Dollar and ruble prices are approximate, at the National Bank of Kazakhstan rate of 4 November 2026. Payment and the exact amount are agreed when you order.',
+  'prices.note': 'Dollar and ruble prices are approximate, at the National Bank of Kazakhstan rate of 4 November 2026 (1 USD = 453.26 KZT, 1 RUB = 5.58 KZT). Payment and the exact amount are agreed when you order.',
   'prices.all': 'All prices ↗',
   'p.example': 'Example:',
   'p.examples': 'Examples:',
@@ -93,7 +94,7 @@ export const EN = {
   'tier.landing': 'Landing page · 12,000 KZT',
   'tier.3d': '3D website · from 30,000 KZT',
   'tier.business': 'Business website · from 40,000 KZT',
-  'tier.complex': 'Complex project · priced individually',
+  'tier.complex': 'Complex project · price agreed individually',
 };
 
 for (const [k, v] of Object.entries(HONESTY)) EN[`hon.${k}`] = v.en;

@@ -23,7 +23,7 @@ export function prices({ desktop }) {
     trigger: '.eyecatch', start: 'top 70%', once: true,
     onEnter: () => {
       G.from('.eyecatch__enso', { rotation: -120, opacity: 0, scale: 0.8, duration: 1.2, ease: 'expo.out', transformOrigin: '50% 50%' });
-      G.from('.eyecatch__k', { scale: 1.4, opacity: 0, duration: 0.8, ease: 'power3.out', delay: 0.2 });
+      G.from('.eyecatch__k', { opacity: 0, duration: 0.8, ease: 'power2.out', delay: 0.3 });
       G.from(['.eyecatch .kicker', '.eyecatch .ch-head__h', '.eyecatch__line'], { y: 24, opacity: 0, duration: 0.8, stagger: 0.08, ease: 'power3.out' });
     },
   }));
@@ -36,7 +36,7 @@ export function prices({ desktop }) {
     const obi = document.createElement('div');
     obi.className = 'obi';
     obi.setAttribute('aria-hidden', 'true');
-    const band = '<div class="obi__band"><b>封</b><span>Axioma</span><b>封</b></div>';
+    const band = '<div class="obi__band"><span>ZEN</span></div>';
     obi.innerHTML = `<div class="obi__half" style="clip-path:polygon(0 0,58% 0,42% 100%,0 100%)">${band}</div><div class="obi__half" style="clip-path:polygon(58% 0,100% 0,100% 100%,42% 100%)">${band}</div>`;
     list.append(obi);
     injected.push(obi);
@@ -117,8 +117,6 @@ export function process({ desktop }) {
         G.to(num, { opacity: 1, scale: 1, duration: 0.9, ease: 'expo.out' });
         G.to(txt, { opacity: 1, y: 0, duration: 0.8, stagger: 0.08, ease: 'power3.out', delay: 0.1 });
         const r = num.getBoundingClientRect();
-        trail([r.left - 20, r.bottom - r.height * 0.2], [r.right + 40, r.top + r.height * 0.25], { w: 8, dur: 0.16 });
-        sound.play('swish');
         if (i === 3) {
           burst(st, { points: [[r.left + r.width / 2, r.top + r.height / 2]], count: 30, colors: ['#FF8FB1', '#FFC2D3', '#F4EFEA', '#E5122A'], gravity: 260, speed: [100, 340], size: [2, 5], life: 1.4 });
         }
@@ -139,7 +137,7 @@ export function faq() {
     const d = e.target;
     if (!d.open || env.calm) return;
     const a = $('.qa__a', d);
-    G.from(a, { y: -10, opacity: 0, duration: 0.45, ease: 'power3.out' });
+    G.fromTo(a, { y: -10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'power3.out', overwrite: true });
   };
   const list = $$('.qa');
   list.forEach((d) => d.addEventListener('toggle', on));
@@ -154,7 +152,10 @@ export function duel({ desktop }) {
   const pin = $('.duel__pin');
   const panel = $('.duel__panel');
   const hero = $('.duel__hero');
-  const smear = $('.duel__smear');
+  const smear = document.createElement('div');
+  smear.className = 'duel__smear';
+  smear.setAttribute('aria-hidden', 'true');
+  panel.append(smear);
   const enemy = $('.duel__enemy');
   const enemyWrap = $('.duel__enemy-wrap');
   const insert = $('.duel__insert');
@@ -171,14 +172,13 @@ export function duel({ desktop }) {
     through: [0.5, 470 / 900],
     remove: true,
     fall: 'time',
-    slip: 14, hitStop: 60,
+    slip: 10, hitStop: 0, slipDur: 0.4,
     timeFall: { dist: desktop ? '14vh' : '10vh', rot: desktop ? 10 : 7, dur: 0.9, ease: 'power2.in', gravity: 0 },
-    trail: { w: 12, dur: 0.12 },
+    trail: { w: 9, dur: 0.3 },
     onSwap: (h) => {
       impact(panel, h.P, desktop ? 'impact' : 'white');
       shake(panel, 4);
       const pr = panel.getBoundingClientRect();
-      kanjiFlash(panel, '斬', { x: pr.width * 0.5, y: pr.height * 0.45, size: Math.min(pr.height * 0.7, 420), hold: 0.3 });
       const pts = [];
       for (let i = 0; i <= 12; i++) pts.push([h.seg[0][0] + (h.seg[1][0] - h.seg[0][0]) * i / 12, h.seg[0][1] + (h.seg[1][1] - h.seg[0][1]) * i / 12]);
       burst(panel, { points: pts, count: desktop ? 90 : 40, colors: ['#0B0A0C', '#9E0B1C', '#F4EFEA'], life: 1.1, gravity: 700, speed: [60, 320], size: [1.5, 4] });
@@ -193,12 +193,8 @@ export function duel({ desktop }) {
     const tl = G.timeline({ defaults: { ease: 'none' } });
     tl.to('.duel__bar', { scaleY: 1, duration: 0.1 }, 0)
       .fromTo('.duel__wind i', { x: -40 }, { x: 40, duration: 1 }, 0)
-      .fromTo('.duel__eye--a', { xPercent: -101 }, { xPercent: 0, duration: 0.05 }, 0.12)
-      .fromTo('.duel__eye--b', { xPercent: 101 }, { xPercent: 0, duration: 0.05 }, 0.14)
-      .fromTo(capA, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.04 }, 0.18)
-      .to('.duel__eye--a', { xPercent: 101, duration: 0.02 }, 0.28)
-      .to('.duel__eye--b', { xPercent: -101, duration: 0.02 }, 0.28)
-      .to(capA, { opacity: 0, duration: 0.03 }, 0.33)
+      .fromTo(capA, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.06 }, 0.14)
+      .to(capA, { opacity: 0, duration: 0.04 }, 0.32)
       .fromTo(capB, { opacity: 0 }, { opacity: 1, duration: 0.03 }, 0.36)
       .to(insert, { yPercent: 0, duration: 0.06, ease: 'power2.out' }, 0.36)
       .to(bladeEl, { xPercent: 0, duration: 0.24, ease: 'power2.in' }, 0.42)
@@ -217,7 +213,6 @@ export function duel({ desktop }) {
           .set(hero, { opacity: 0 }, 0.06)
           .to(smear, { x: W * 0.4, scaleX: 1, duration: 0.23, ease: 'power4.inOut' }, 0)
           .to(hero, { x: W * 0.58, duration: 0.35, ease: 'power4.inOut' }, 0)
-          .fromTo(lines, { opacity: 0 }, { opacity: 1, duration: 0.05, repeat: 3, yoyo: true }, 0.02)
           .set(hero, { opacity: 1 }, 0.29)
           .to(smear, { opacity: 0, duration: 0.1 }, 0.27)
           .set(hero, { scaleX: -1 }, 0.35);
@@ -228,6 +223,8 @@ export function duel({ desktop }) {
     };
 
     let cutDone = false;
+    let dc = null;
+    kills.push(() => dc?.kill());
     kills.push(ST.create({
       trigger: section, start: 'top top', end: '+=100%', pin, pinSpacing: true, anticipatePin: 1,
       animation: tl, scrub: 0.5,
@@ -238,20 +235,22 @@ export function duel({ desktop }) {
         if (p >= 0.68 && !cutDone) {
           cutDone = true;
           sound.play('chin');
-          G.delayedCall(0.12, () => h.cut());
+          const hh = h;
+          dc = G.delayedCall(0.12, () => hh.cut());
         }
         if (p < 0.66 && cutDone) {
           cutDone = false;
+          dc?.kill();
           h.reset();
           h = makeCut(true);
         }
       },
     }));
     kills.push(() => h.reset());
-    kills.push(() => G.set([hero, smear, lines, insert, bladeEl, capA, capB, capC, '.duel__bar', '.duel__wind i', '.duel__eye'], { clearProps: 'all' }));
+    kills.push(() => G.set([hero, smear, lines, insert, bladeEl, capA, capB, capC, '.duel__bar', '.duel__wind i'], { clearProps: 'all' }));
   } else {
     const h = makeCut(false);
-    G.set(insert, { xPercent: -50, yPercent: 160, x: 0, y: 0 });
+    G.set(insert, { xPercent: -50, yPercent: 160, x: 0, y: 0, autoAlpha: 0 });
     G.set(bladeEl, { xPercent: -58 });
     kills.push(ST.create({
       trigger: panel, start: 'top 60%', once: true,
@@ -266,10 +265,10 @@ export function duel({ desktop }) {
           .to(smear, { opacity: 0, duration: 0.1 }, 0.58)
           .set(hero, { scaleX: -1 }, 0.66)
           .to(capA, { opacity: 0, duration: 0.15 }, 0.7)
-          .to(insert, { yPercent: 0, duration: 0.25, ease: 'power2.out' }, 0.7)
+          .to(insert, { yPercent: 0, autoAlpha: 1, duration: 0.35, ease: 'power2.out' }, 0.7)
           .to(bladeEl, { xPercent: 0, duration: 0.8, ease: 'power2.in' }, 0.9)
           .call(() => sound.play('chin'), null, 1.7)
-          .to(insert, { yPercent: 160, duration: 0.2, ease: 'power2.in' }, 1.75)
+          .to(insert, { yPercent: 160, autoAlpha: 0, duration: 0.3, ease: 'power2.in' }, 1.75)
           .call(() => h.cut(), null, 1.82)
           .fromTo(capC, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.3 }, 2.2);
       },
@@ -294,11 +293,12 @@ export function back({ desktop }) {
   const canvas = $('.back__petals');
   const kills = [];
   let petals = null;
+  let backCut = null;
 
   // つづく writes itself through a mask of centre-line strokes
   let strokes = [];
   const src = document.getElementById('tsuzuku-strokes');
-  if (tz && src) {
+  if (false && tz && src) {
     const defs = document.createElementNS(NS, 'defs');
     const mask = document.createElementNS(NS, 'mask');
     mask.id = 'tz-mask';
@@ -321,20 +321,18 @@ export function back({ desktop }) {
 
   const finish = (instant) => {
     if (strokes.length) G.to(strokes, { drawSVG: '100%', duration: instant ? 0 : 1.2 / strokes.length, stagger: instant ? 0 : 1.2 / strokes.length, ease: 'power1.inOut' });
-    if (!petals && canvas) petals = createPetals(canvas, { count: desktop ? 24 : 12, reduce: false });
+    if (!petals && canvas) petals = createPetals(canvas, { count: desktop ? 14 : 6, maxDpr: desktop ? 1.5 : 1.25 });
   };
 
-  G.set(seal, { opacity: 0 });
   kills.push(ST.create({
     trigger: card, start: 'top 80%', once: true,
     onEnter: () => {
       const r = card.getBoundingClientRect();
       if (r.bottom < 0 || r.top < innerHeight * 0.2) {
-        G.set(seal, { opacity: 1 });
         finish(true);
         return;
       }
-      const h = createSlash({ layers: [{ el: card, depth: 1 }], angle: 90, through: [0.52, 0.5], fall: 'none' });
+      const h = backCut = createSlash({ layers: [{ el: card, depth: 1 }], angle: 90, through: [0.52, 0.5], fall: 'none' });
       h.prepare();
       const vw = innerWidth / 100;
       for (const q of h.pieces) {
@@ -345,8 +343,6 @@ export function back({ desktop }) {
         x: 0, rotation: 0, duration: 0.42, ease: 'power3.out',
         onComplete: () => {
           h.reset();
-          G.fromTo(seal, { opacity: 1, scale: 2.2 }, { scale: 1, duration: 0.18, ease: 'back.out(3)' });
-          shake(card, 3);
           sound.play('clap');
           finish(false);
         },
@@ -363,9 +359,10 @@ export function back({ desktop }) {
 
   return () => {
     kills.forEach((k) => (typeof k === 'function' ? k() : k.kill()));
+    backCut?.reset();
     petals?.destroy();
     petals = null;
     card.style.visibility = '';
-    G.set([seal, '.credits', ...strokes], { clearProps: 'all' });
+    G.set(['.credits', ...strokes], { clearProps: 'all' });
   };
 }

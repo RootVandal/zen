@@ -19,7 +19,6 @@ export function runLoader() {
     const sheath = $('.loader__sheath', el);
     const core = $('.loader__core', el);
     const label = $('.loader__label', el);
-    G.from('.loader__kanji', { opacity: 0, scale: 1.2, duration: 0.6, ease: 'power2.out' });
     G.from(label, { opacity: 0, y: 8, duration: 0.3 });
     const to = G.quickTo(sheath, 'xPercent', { duration: 0.25, ease: 'power3.out' });
     let p = 0.3;
@@ -66,6 +65,7 @@ export function initHeader(lenisRef) {
       const y = scrollY;
       const d = y - lastY;
       const lock = !drawer.hidden || hdr.matches(':focus-within');
+      hdr.classList.toggle('is-solid', y > 80);
       if (!lock && y > 120 && d > 8) hdr.classList.add('is-hidden');
       else if (d < -4 || y < 120) hdr.classList.remove('is-hidden');
       lastY = y;
@@ -137,24 +137,21 @@ export function initPointer(G) {
   const tag = $('.cursor-tag');
   const xTo = G.quickTo(tag, 'x', { duration: 0.25, ease: 'power3' });
   const yTo = G.quickTo(tag, 'y', { duration: 0.25, ease: 'power3' });
-  let over = false;
   const move = (e) => { xTo(e.clientX); yTo(e.clientY); };
   addEventListener('pointermove', move, { passive: true });
+  const pairs = [];
   for (const el of $$('[data-cursor-label]')) {
-    el.addEventListener('pointerenter', () => { over = true; G.to(tag, { opacity: 1, scale: 1, duration: 0.12 }); });
-    el.addEventListener('pointerleave', () => { over = false; G.to(tag, { opacity: 0, scale: 0.8, duration: 0.12 }); });
+    const en = () => G.to(tag, { opacity: 1, scale: 1, duration: 0.15 });
+    const le = () => G.to(tag, { opacity: 0, scale: 0.8, duration: 0.15 });
+    el.addEventListener('pointerenter', en);
+    el.addEventListener('pointerleave', le);
+    pairs.push([el, en, le]);
   }
-  const skip = 'a, button, summary, input, label, dialog, [data-no-ink], .drawer';
-  addEventListener('pointerdown', (e) => {
-    if (env.calm || !env.desktop || e.button !== 0 || e.target.closest(skip) || over) return;
-    const ang = (-35 + Math.random() * 20) * (Math.PI / 180);
-    const L = 46;
-    const A = [e.clientX - Math.cos(ang) * L / 2, e.clientY - Math.sin(ang) * L / 2];
-    const B = [e.clientX + Math.cos(ang) * L / 2, e.clientY + Math.sin(ang) * L / 2];
-    trail(A, B, { w: 7, dur: 0.09 });
-    sound.play('swish');
-  });
-  return () => removeEventListener('pointermove', move);
+  return () => {
+    removeEventListener('pointermove', move);
+    pairs.forEach(([el, en, le]) => { el.removeEventListener('pointerenter', en); el.removeEventListener('pointerleave', le); });
+    G.set(tag, { opacity: 0 });
+  };
 }
 
 /* ======================= Progress katana + HUD ======================= */
@@ -177,7 +174,7 @@ export function initProgress(G, ST) {
       onToggle: (s) => pk.classList.toggle('is-off', s.isActive),
     }));
   }
-  if (getComputedStyle(hud).display !== 'none') {
+  if (hud && getComputedStyle(hud).display !== 'none') {
     const anchors = () => {
       const top = (sel, f = 0) => { const e = $(sel); if (!e) return 0; const r = e.getBoundingClientRect(); return r.top + scrollY + r.height * f - innerHeight * 0.5; };
       return [
@@ -244,13 +241,14 @@ export function initSheet(lenisRef) {
     open.href = w.url;
     $('.sheet__body', dlg).scrollTop = 0;
     dlg.showModal();
+    document.documentElement.style.overflow = 'hidden';
     lenisRef()?.stop();
   };
-  dlg.addEventListener('close', () => { lenisRef()?.start(); opener?.focus({ preventScroll: true }); });
+  dlg.addEventListener('close', () => { document.documentElement.style.overflow = ''; lenisRef()?.start(); opener?.focus({ preventScroll: true }); });
   $('.sheet__close', dlg).addEventListener('click', () => dlg.close());
   dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
   for (const b of $$('.work__full')) b.addEventListener('click', () => show(b.dataset.full, b));
-  for (const a of $$('.bframe')) {
+  for (const a of $$('.work__art')) {
     a.addEventListener('click', (e) => {
       const full = a.closest('.work').querySelector('.work__full');
       if (env.desktop || !full) return;

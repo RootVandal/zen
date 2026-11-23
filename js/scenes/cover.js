@@ -1,162 +1,52 @@
 /* Cover (the first cut), contents under-layer, chapter 1 gutter cut. */
 import { env, $, $$ } from '../core/env.js';
-import { createSlash, trail } from '../fx/slice.js';
-import { kanjiFlash, impact, shake, burst, sound } from '../fx/fx.js';
+
+import { sound } from '../fx/fx.js';
 import { createPetals } from '../fx/petals.js';
 
 const gsap = () => window.gsap;
+let introPlayed = false;
 
-function splitMasthead() {
-  const m = $('.masthead__t');
-  if (!m || m.dataset.split) return;
-  m.dataset.split = '1';
-  m.innerHTML = [...m.textContent].map((c) => `<span class="ch">${c}</span>`).join('');
-}
 
 export function cover({ desktop, loaderDone }) {
   const G = gsap();
   const ST = window.ScrollTrigger;
   const section = $('#cover');
-  const pin = $('.cover__pin');
-  const stage = $('.cover__stage');
-  const under = $('.cover__under');
-  const contents = $('#contents');
-  const plate = $('.cover__plate');
-  const fig = $('.cover__fig');
-  const type = $('.cover__type');
-  const ronin = $('.cover__ronin');
-  const fx = $('.cover__fx');
-  const cleanups = [];
+  const fx = document.createElement('div');
+  fx.className = 'cover__fx';
+  fx.setAttribute('aria-hidden', 'true');
+  section.append(fx);
 
-  // contents lives under the cover while the cut opens it
-  const contentsHome = contents.parentElement;
-  const contentsNext = contents.nextElementSibling;
-  under.append(contents);
-  cleanups.push(() => contentsHome.insertBefore(contents, contentsNext));
-
-  // on phones the ronin joins the plate: two layers to cut instead of three
-  if (!desktop) {
-    plate.append(ronin);
-    cleanups.push(() => fig.append(ronin));
-  }
-
-  splitMasthead();
-
-  // sakura drifting over the cover (outside the cut layers)
+  // a few petals drifting over the scene
   const pc = document.createElement('canvas');
   pc.className = 'cover__petals';
   pc.setAttribute('aria-hidden', 'true');
   fx.append(pc);
-  const petals = createPetals(pc, { count: desktop ? 34 : 16 });
-  petals.setWind(desktop ? 26 : 14);
-  cleanups.push(() => { petals.destroy(); pc.parentNode?.removeChild(pc); });
+  const petals = createPetals(pc, { count: desktop ? 14 : 6, maxDpr: desktop ? 1.5 : 1.25 });
+  petals.setWind(desktop ? 18 : 10);
 
-  // intro after the loader
   loaderDone.then(() => {
-    G.from('.masthead .ch', { yPercent: 40, opacity: 0, stagger: 0.06, duration: 0.9, ease: 'power3.out' });
-    G.from('.cover__sun', { opacity: 0, duration: 1.4, ease: 'power2.out' });
-    G.from('.cover .tag', { yPercent: -120, duration: 0.7, ease: 'power3.out', delay: 0.25 });
-    G.from(['.cover .kicker', '.cover__h1', '.cover__lead', '.cover__btns'], { y: 24, opacity: 0, duration: 0.7, stagger: 0.08, ease: 'power3.out', delay: 0.15 });
-    G.from('.cover__ronin', { y: 30, opacity: 0, duration: 0.9, ease: 'power3.out', delay: 0.1 });
+    if (introPlayed) return;
+    introPlayed = true;
+    G.from('.cover__sun', { opacity: 0, y: 40, duration: 1.6, ease: 'power2.out' });
+    G.from('.cover__ronin', { opacity: 0, y: 24, duration: 1.4, ease: 'power2.out', delay: 0.2 });
+    G.from(['.cover .kicker', '.masthead', '.cover__h1', '.cover__lead', '.cover__prices', '.cover__btns'], { y: 18, opacity: 0, duration: 0.9, stagger: 0.08, ease: 'power2.out', delay: 0.2 });
   });
 
-  const layers = desktop
-    ? [{ el: plate, depth: 0.3 }, { el: fig, depth: 0.65 }, { el: type, depth: 1 }]
-    : [{ el: plate, depth: 0.45 }, { el: type, depth: 1 }];
-  const make = () => createSlash({
-    layers,
-    angle: desktop ? -26 : -22,
-    through: () => {
-      const a = $('.cover__type .cut-anchor');
-      const r = (a || type).getBoundingClientRect();
-      return [r.left + r.width * 0.55, r.top + r.height * 0.5];
-    },
-    trailRect: () => stage.getBoundingClientRect(),
-    fall: 'scrub',
-    slip: 24, hitStop: 70,
-    gap: desktop ? { base: '3vh', k: '14vh', exit: '80vh' } : { base: '4vh', k: '10vh', exit: '75vh' },
-    trail: { w: desktop ? 16 : 12, dur: 0.14 },
-    onSwap: (h) => {
-      section.classList.add('is-cut');
-      const pr = pin.getBoundingClientRect();
-      impact(pin, h.P, desktop ? 'impact' : 'white');
-      kanjiFlash(fx, '斬', { x: pr.width * 0.5, y: pr.height * 0.46, size: Math.min(pr.height * 0.62, 560), hold: 0.25 });
-      const pts = [];
-      for (let i = 0; i <= 10; i++) {
-        const k = i / 10;
-        pts.push([h.seg[0][0] + (h.seg[1][0] - h.seg[0][0]) * k, h.seg[0][1] + (h.seg[1][1] - h.seg[0][1]) * k]);
-      }
-      burst(pin, { points: pts, count: 46, colors: ['#E5122A', '#9E0B1C', '#FF2A44', '#F4EFEA'], size: [1.5, 5] });
-      sound.play('swish');
-      shake(stage, 4);
-    },
-  });
-  let h = make();
-  let progress = 0;
-
-  // connective motion + pin
+  // calm parallax as the cover scrolls away
   const tl = G.timeline({ defaults: { ease: 'none' } });
-  tl.to(stage, { scale: 1.04, duration: 0.18 }, 0)
-    .to(desktop ? '.cover__fig' : '.cover__ronin', { yPercent: -2, duration: 0.18 }, 0)
-    .to('.cover__sun', { y: '4vh', duration: 0.18 }, 0)
-    .fromTo(under, { scale: 1.06 }, { scale: 1, duration: 0.68 }, 0.22)
-    .to({}, { duration: 0.1 }, 0.9);
-  const glint = document.createElement('i');
-  glint.className = 'cover__glint';
-  glint.style.cssText = 'position:absolute;top:0;bottom:0;width:7%;left:0;background:rgba(255,255,255,.85);transform:skewX(-20deg);opacity:0;pointer-events:none;z-index:4';
-  fx.append(glint);
-  cleanups.push(() => glint.remove());
-  tl.fromTo(glint, { xPercent: -200, opacity: 0.9 }, { xPercent: 1500, opacity: 0.9, duration: 0.08 }, 0.08)
-    .set(glint, { opacity: 0 }, 0.17);
-
-  let fallTween = null;
-  const apply = (p) => {
-    progress = p;
-    if (p >= 0.2 && h.state() === 'idle') {
-      h.cut();
-    }
-    if (p < 0.16 && h.state() !== 'idle') {
-      fallTween?.kill();
-      h.reset();
-      h = make();
-      section.classList.remove('is-cut');
-    }
-    if (h.fallTl) {
-      const target = Math.max(0, Math.min(1, (p - 0.22) / 0.68));
-      fallTween = G.to(h.fallTl, { progress: target, duration: 0.4, ease: 'power3.out', overwrite: true });
-    }
-  };
-
-  const st = ST.create({
-    trigger: section,
-    start: 'top top',
-    end: desktop ? '+=130%' : '+=100%',
-    pin: pin,
-    pinSpacing: true,
-    anticipatePin: 1,
-    animation: tl,
-    scrub: desktop ? 0.4 : true,
-    onUpdate: (s) => apply(s.progress),
-    onRefresh: (s) => {
-      // page loaded below the cover: show the aftermath straight away
-      if (s.progress >= 0.2 && h.state() === 'idle') {
-        h.prepare();
-        section.classList.add('is-cut');
-        for (const q of h.pieces) { q.fall.style.visibility = 'visible'; }
-        for (const l of layers) l.el.style.visibility = 'hidden';
-        h.fallTl?.progress(Math.min(1, (s.progress - 0.22) / 0.68));
-      }
-    },
-  });
+  tl.to('.cover__sun', { yPercent: 35 }, 0)
+    .to('.cover__ronin', { yPercent: 12 }, 0)
+    .to('.cover__ridge', { yPercent: 8 }, 0)
+    .to(desktop ? '.cover__text' : '.cover .kicker, .masthead, .cover__h1, .cover__lead, .cover__prices', { y: desktop ? -80 : -40, opacity: 0.2 }, 0);
+  const st = ST.create({ trigger: section, start: 'top top', end: 'bottom top', scrub: true, animation: tl });
 
   return () => {
     st.kill();
     tl.kill();
-    fallTween?.kill();
-    h.reset();
-    section.classList.remove('is-cut');
-    G.set([stage, under, '.cover__sun', '.cover__fig', '.cover__ronin'], { clearProps: 'transform' });
-    cleanups.forEach((f) => f());
+    petals.destroy();
+    fx.remove();
+    G.set(['.cover__sun', '.cover__ronin', '.cover__ridge', '.cover__text', '.cover .kicker', '.masthead', '.cover__h1', '.cover__lead', '.cover__prices'], { clearProps: 'all' });
   };
 }
 
@@ -209,7 +99,7 @@ export function about({ desktop }) {
 
   const st = ST.create({
     trigger: page,
-    start: 'top 70%',
+    start: 'top 55%',
     once: true,
     onEnter: () => {
       if (done) return;

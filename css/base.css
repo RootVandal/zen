@@ -1,6 +1,6 @@
 /* ===================== Base ===================== */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-padding-top: var(--header-h); background: var(--ink); color-scheme: dark; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: var(--header-h); background: var(--ink); color-scheme: dark; overflow-x: clip; }
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-stopped { overflow: hidden; }
@@ -113,6 +113,7 @@ a.chip { transition: color .2s, box-shadow .2s; }
   transition: transform .35s var(--ease-blade);
 }
 .hdr.is-hidden { transform: translateY(-110%); }
+.hdr.is-solid { background: rgba(11, 10, 12, .94); box-shadow: 0 1px 0 var(--line); }
 .hdr__brand { display: flex; align-items: center; gap: 12px; text-decoration: none; margin-right: auto; }
 .hdr__seal { width: 30px; height: 30px; }
 .hdr__name { font: 600 20px/1 var(--sc); letter-spacing: .32em; text-transform: uppercase; }
@@ -257,3 +258,11 @@ a.chip { transition: color .2s, box-shadow .2s; }
 
 .cur { font-family: var(--sans); font-weight: 500; font-style: normal; font-size: .82em; }
 .hdr__seal { display: grid; place-items: center; width: 32px; height: 32px; background: var(--red); color: var(--paper); font: 400 21px/1 var(--brush); border-radius: 3px; box-shadow: inset 0 0 0 2px var(--red), inset 0 0 0 3px rgba(244, 239, 234, .75); transform: rotate(-4deg); }
+
+/* comfortable tap targets */
+.hdr__brand { min-width: 44px; min-height: 44px; }
+.lang button { height: 44px; min-width: 44px; }
+.sound-t, .calm-t { min-height: 44px; }
+a.chip { min-height: 36px; }
+@media (max-width: 1023px) { .btn--sm { min-height: 44px; } }
+.code__line a, .foot__bottom a { display: inline-flex; min-height: 44px; align-items: center; }

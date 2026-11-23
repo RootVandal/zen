@@ -8,8 +8,8 @@ const gsap = () => window.gsap;
 const byKey = Object.fromEntries(WORKS.map((w) => [w.key, w]));
 
 function noren(art, kanji, desktop) {
-  const chars = [...kanji];
-  const count = chars.length === 1 ? 3 : desktop ? 4 : 2;
+  const chars = [...(kanji || '')];
+  const count = desktop ? 4 : 3;
   const slots = chars.length === 1 ? [1] : desktop ? [1, 2] : [0, 1];
   const el = document.createElement('div');
   el.className = 'noren';
@@ -41,6 +41,7 @@ export function works({ desktop }) {
   for (const art of $$('.work')) {
     const key = art.dataset.key;
     const w = byKey[key];
+    if (!w) { console.warn('[works] no data for', key); continue; }
     const stage = $('.work__stage', art);
     const wart = $('.work__art', art);
     const frame = $('.bframe', art);
@@ -67,17 +68,19 @@ export function works({ desktop }) {
         through: [0.55, 0.45],
         remove: true,
         fall: 'time',
-        slip: 18, hitStop: 60, slipDur: 0.1,
-        timeFall: { dist: desktop ? '30vh' : '22vh', rot: 6, dur: 0.2, ease: 'power2.in' },
-        trail: { w: 13, dur: 0.13 },
+        slip: 10, hitStop: 0, slipDur: 0.35,
+        timeFall: { dist: desktop ? '22vh' : '16vh', rot: 3, dur: 0.6, ease: 'power2.in' },
+        trail: { w: 8, dur: 0.3 },
         onSwap: (hh) => { impact(view, hh.P, 'white'); sound.play('swish'); },
         trailRect: () => view.getBoundingClientRect(),
       });
       handles.push(h);
     } else {
-      nor = noren(wart, art.dataset.noren || w.kanji, desktop);
+      nor = noren(wart, '', desktop);
       injected.push(nor);
-      requestAnimationFrame(() => sizeNoren(nor, wart));
+      const ro = new ResizeObserver(() => sizeNoren(nor, wart));
+      ro.observe(frame);
+      kills.push(() => ro.disconnect());
     }
 
     const open = () => {
@@ -85,7 +88,6 @@ export function works({ desktop }) {
       opened = true;
       const finish = () => {
         G.fromTo(shot, { scale: 1.03 }, { scale: 1, duration: 0.22, ease: 'power2.out' });
-        injected.push(stamp(wart, w.kanji, { cls: 'work__seal', rot: -6 }));
       };
       if (type === 'ink') {
         if (!ink.getAttribute('src')) ink.src = `assets/shots/${key}-ink.webp`;
@@ -101,29 +103,28 @@ export function works({ desktop }) {
         const y = rod.bottom + 36;
         const A = [rod.left - 30, y - Math.tan(ang) * (rod.width / 2 + 30)];
         const B = [rod.right + 30, y + Math.tan(ang) * (rod.width / 2 + 30)];
-        trail(A, B, { w: 12, dur: 0.13 });
+        trail(A, B, { w: 8, dur: 0.3 });
         sound.play('swish');
         const bodies = $$('.noren__body', nor);
         const stubs = $$('.noren__flap', nor);
-        const tl = G.timeline({ delay: 0.15, onComplete: finish });
+        const tl = G.timeline({ delay: 0.3, onComplete: finish });
         tl.to(bodies, {
-          y: () => innerHeight, rotation: () => G.utils.random(-25, 25), x: () => G.utils.random(-4, 4) * innerWidth / 100,
-          duration: 0.32, ease: 'power2.in', stagger: 0.02,
+          y: () => innerHeight * 0.8, opacity: 0, rotation: () => G.utils.random(-8, 8), x: () => G.utils.random(-2, 2) * innerWidth / 100,
+          duration: 0.7, ease: 'power2.in', stagger: 0.05,
         }, 0.04);
         tl.set(bodies, { visibility: 'hidden' });
-        G.to(stubs, { rotation: (i) => (i % 2 ? 3 : -3), duration: 0.5, ease: 'sine.inOut', yoyo: true, repeat: 5, delay: 0.2, onComplete: () => G.to(stubs, { rotation: 0, duration: 0.4 }) });
+        G.to(stubs, { rotation: (i) => (i % 2 ? 1.5 : -1.5), duration: 0.8, ease: 'sine.inOut', yoyo: true, repeat: 3, delay: 0.3, onComplete: () => G.to(stubs, { rotation: 0, duration: 0.6 }) });
       }
     };
     kills.push(ST.create({
-      trigger: frame,
-      start: desktop ? 'top 72%' : 'top 78%',
+      trigger: desktop ? art : frame,
+      start: desktop ? 'top 25%' : 'top 65%',
       once: true,
       onEnter: () => {
         if (frame.getBoundingClientRect().bottom < 0) {
           opened = true;
           if (h) h.aftermath();
           if (nor) $$('.noren__body', nor).forEach((b) => { b.style.visibility = 'hidden'; });
-          injected.push(stamp(wart, w.kanji, { cls: 'work__seal', rot: -6 }));
           return;
         }
         open();
@@ -137,7 +138,7 @@ export function works({ desktop }) {
         animation: G.timeline()
           .fromTo($('.work__text', art), { y: 40 }, { y: 0, ease: 'none' }, 0)
           .fromTo($('.pframe', art), { y: '14vh', rotation: art.classList.contains('work--flip') ? -4 : 4 }, { y: 0, rotation: 0, ease: 'none' }, 0)
-          .fromTo($('.work__ghost', art), { yPercent: 14 }, { yPercent: -14, ease: 'none' }, 0),
+    
       }));
     } else {
       kills.push(ST.create({
@@ -210,27 +211,10 @@ export function works({ desktop }) {
     }
   }
 
-  /* ---------- velocity skew for the whole chapter (desktop) ---------- */
-  if (desktop) {
-    const frames = $$('.work .bframe, .work .pframe');
-    const skewTo = G.quickTo(frames, 'skewY', { duration: 0.3, ease: 'power3' });
-    let settle = 0;
-    kills.push(ST.create({
-      trigger: '#works', start: 'top bottom', end: 'bottom top',
-      onUpdate: (s) => {
-        skewTo(G.utils.clamp(-3, 3, -s.getVelocity() / 400));
-        clearTimeout(settle);
-        settle = setTimeout(() => skewTo(0), 140);
-      },
-      onLeave: () => skewTo(0), onLeaveBack: () => skewTo(0),
-    }));
-    kills.push(() => G.set(frames, { clearProps: 'skewY' }));
-  }
-
   /* ---------- splash ---------- */
   kills.push(ST.create({
     trigger: '.works__splash', start: 'top bottom', end: 'bottom top', scrub: true,
-    animation: G.fromTo('.works__kanji', { yPercent: 18, scale: 1.12 }, { yPercent: -18, scale: 1, ease: 'none' }),
+    animation: G.fromTo('.works__h', { yPercent: 10 }, { yPercent: -10, ease: 'none' }),
   }));
   kills.push(ST.create({
     trigger: '.works__splash', start: 'top 60%', once: true,
@@ -244,6 +228,6 @@ export function works({ desktop }) {
     kills.forEach((k) => (typeof k === 'function' ? k() : k.kill()));
     handles.forEach((h) => h.reset());
     injected.forEach((n) => n.remove());
-    G.set($$('.bframe__shot, .pframe, .work__text, .work__ghost'), { clearProps: 'all' });
+    G.set($$('.bframe__shot, .pframe, .work__text'), { clearProps: 'all' });
   };
 }

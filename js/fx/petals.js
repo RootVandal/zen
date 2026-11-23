@@ -53,7 +53,7 @@ export function createPetals(canvas, opts = {}) {
   function density() {
     const area = (W * H) / (1440 * 900);
     const base = opts.count ?? 46;
-    return Math.round(Math.min(base, Math.max(14, base * area)) * (reduce ? 0.25 : 1));
+    return Math.round(Math.min(base, Math.max(Math.min(14, base), base * area)) * (reduce ? 0.25 : 1));
   }
 
   function spawn(p, anywhere) {

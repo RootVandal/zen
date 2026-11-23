@@ -54,8 +54,8 @@ export const PRICES = [
     name: { ru: 'Сложный проект', en: 'Complex project' },
     priceText: { ru: 'Цена обсуждается индивидуально', en: 'The price is agreed individually' },
     lead: {
-      ru: 'Интернет-магазин, приложение или что-то особенное? Напишите в Telegram или оставьте заявку.',
-      en: 'An online store, an app or something unusual? Message us on Telegram or send a request.',
+      ru: 'Сложный проект или что-то особенное? Цена обсуждается индивидуально: напишите в Telegram или оставьте заявку.',
+      en: 'A complex project or something unusual? The price is agreed individually: message us on Telegram or send a request.',
     },
     examples: ['lumen'],
   },
@@ -64,7 +64,7 @@ export const PRICES = [
 export const HONESTY = {
   own: { ru: 'Наш проект', en: 'Our own project' },
   demo: { ru: 'Демо · компания вымышлена', en: 'Demo · fictional company' },
-  concept: { ru: 'Концепт', en: 'Concept' },
+  concept: { ru: 'Концепт · компания вымышлена', en: 'Concept · fictional company' },
   wip: { ru: 'Наш проект · в работе', en: 'Our project · in progress' },
 };
 
@@ -74,13 +74,12 @@ export const WORKS = [
   {
     key: 'axioma', tier: '3d', honesty: 'own', kanji: '公理', tour: false,
     cut: { type: 'ink', angle: -24 },
-    sfx: { jp: 'キラッ', ru: 'ВЖУХ', en: 'SHING' },
     title: 'Axioma',
     url: 'https://axioma.codes/', host: 'axioma.codes',
     kind: { ru: '3D-сайт веб-студии', en: 'Web studio 3D website' },
     desc: {
-      ru: 'Девять сцен, которые рождаются прямо в браузере на WebGL2, и музыка, которая сочиняется на ходу. Ни одной картинки или видео — всё генерируется в реальном времени.',
-      en: 'Nine scenes generated right in the browser with WebGL2, and music composed on the fly. Not a single image or video file: everything is rendered in real time.',
+      ru: 'Сцены, которые рождаются прямо в браузере на WebGL2, и музыка, которая сочиняется на ходу. Ни одной картинки, видео или аудиофайла — каждая сцена и каждая нота создаются в реальном времени.',
+      en: 'Scenes generated right in the browser with WebGL2, and music composed on the fly. No image, video or audio files: every scene and every note is generated in real time.',
     },
   },
   {
@@ -97,31 +96,28 @@ export const WORKS = [
   {
     key: 'noir', tier: 'business', honesty: 'concept', kanji: '黒',
     cut: { type: 'ink', angle: 18 },
-    sfx: { jp: 'シャーッ', ru: 'ПШШШ', en: 'FSSHH' },
     title: 'NOIR DETAILING',
     url: 'https://rootvandal.github.io/noir-detailing/', host: 'noir-detailing',
     kind: { ru: 'Детейлинг-студия', en: 'Car detailing studio' },
     desc: {
-      ru: 'Премиальная студия в стиле автомобильного журнала: строгий чёрно-белый язык, калькулятор стоимости, слайдер «до / после» и запись в WhatsApp.',
-      en: 'A premium studio in the style of a car magazine: strict black and white, a price calculator, a before/after slider and booking via WhatsApp.',
+      ru: 'Премиальная студия в стиле автомобильного журнала: строгий чёрно-белый язык, калькулятор стоимости, страницы работ с галереями и форма записи.',
+      en: 'A premium studio in the style of a car magazine: strict black and white, a price calculator, project pages with galleries and a booking form.',
     },
   },
   {
     key: 'coffee', tier: 'landing', honesty: 'demo', kanji: '珈琲',
     cut: { type: 'noren', kanji: '珈琲' },
-    sfx: { jp: 'トポポ', ru: 'БУЛЬ', en: 'GLUG' },
     title: 'Bloom Coffee',
     url: 'https://rootvandal.github.io/axioma-demos/coffee/', host: 'axioma-demos/coffee',
     kind: { ru: 'Лендинг кофейни', en: 'Coffee shop landing page' },
     desc: {
       ru: 'Одна страница, которая пахнет кофе: тёплый первый экран, меню с фильтром, часы работы и «как нас найти» — всё, чтобы гость пришёл утром.',
-      en: 'One page that smells of coffee: a warm first screen, a filterable menu, opening hours and directions, everything to bring a guest in the morning.',
+      en: 'One page that smells of coffee: a warm first screen, a filterable menu, opening hours and directions: everything that brings a guest in for breakfast.',
     },
   },
   {
     key: 'lumen', tier: 'complex', honesty: 'demo', kanji: '宝石',
     cut: { type: 'ink', angle: -28 },
-    sfx: { jp: 'キラキラ', ru: 'ДЗИНЬ', en: 'TWINKLE' },
     title: 'Lumen',
     url: 'https://rootvandal.github.io/axioma-demos/lumen/', host: 'axioma-demos/lumen',
     kind: { ru: 'Интернет-магазин украшений', en: 'Online jewelry store' },
@@ -133,7 +129,6 @@ export const WORKS = [
   {
     key: 'build', tier: 'business', honesty: 'demo', kanji: '建',
     cut: { type: 'noren', kanji: '建' },
-    sfx: { jp: 'ドドド', ru: 'БУМ', en: 'THOOM' },
     title: 'Qala Build',
     url: 'https://rootvandal.github.io/axioma-demos/build/', host: 'axioma-demos/build',
     kind: { ru: 'Сайт строительной компании', en: 'Construction company website' },
@@ -165,14 +160,14 @@ export const CODE = [
 ];
 
 export const STEPS = [
-  { seal: '一', sfx: { jp: 'シュッ', ru: 'ФЬЮТЬ', en: 'WHOOSH' },
-    ru: 'Вы оставляете <a href="{request}">заявку</a> или пишете в <a href="{telegram}">Telegram</a>.',
-    en: 'You send a <a href="{request}">request</a> or message us on <a href="{telegram}">Telegram</a>.' },
-  { seal: '二', sfx: { jp: 'ズズッ', ru: 'ХЛЮП', en: 'SLURP' },
+  { seal: '一',
+    ru: 'Вы оставляете <a href="{request}" target="_blank" rel="noopener">заявку</a> или пишете в <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>.',
+    en: 'You send a <a href="{request}" target="_blank" rel="noopener">request</a> or message us on <a href="{telegram}" target="_blank" rel="noopener">Telegram</a>.' },
+  { seal: '二',
     ru: 'Мы обсуждаем задачу и цену.', en: 'We discuss the task and the price.' },
-  { seal: '三', sfx: { jp: 'カキカキ', ru: 'ЧИРК-ЧИРК', en: 'SCRIBBLE' },
+  { seal: '三',
     ru: 'Создаём дизайн и разрабатываем сайт.', en: 'We design and build the site.' },
-  { seal: '四', sfx: { jp: 'ドーン', ru: 'БАБАХ', en: 'BOOM' },
+  { seal: '四',
     ru: 'Запускаем сайт.', en: 'We launch it.' },
 ];
 
@@ -194,23 +189,9 @@ export const FAQ = [
   {
     q: { ru: 'Как заказать сайт?', en: 'How do I order a website?' },
     a: {
-      ru: 'Оставьте <a href="{request}">заявку на сайте</a> или напишите в Telegram <a href="{telegram}">@nonexxxist</a>.',
-      en: 'Send a <a href="{request}">request on the site</a> or message us on Telegram at <a href="{telegram}">@nonexxxist</a>.',
+      ru: 'Оставьте <a href="{request}" target="_blank" rel="noopener">заявку на сайте</a> или напишите в Telegram <a href="{telegram}" target="_blank" rel="noopener">@nonexxxist</a>.',
+      en: 'Send a <a href="{request}" target="_blank" rel="noopener">request on the site</a> or message us on Telegram at <a href="{telegram}" target="_blank" rel="noopener">@nonexxxist</a>.',
     },
   },
 ];
 
-/* SFX used by sections (Japanese + RU/EN twins). */
-export const SFX = {
-  shing: { jp: 'シャキーン', ru: 'ДЗЕНЬ', en: 'SHING' },
-  slash: { jp: 'ズバッ!', ru: 'ВЖИХ!', en: 'SLASH!' },
-  tada: { jp: 'ドン', ru: 'ТАДАМ', en: 'TA-DA' },
-  bam: { jp: 'ドン', ru: 'БАМ', en: 'BAM' },
-  snip: { jp: 'スパッ', ru: 'ЧИК', en: 'SNIP' },
-  done: { jp: 'シャキーン', ru: 'ВЖЖИК', en: 'SHHING' },
-  pop: { jp: 'ポン', ru: 'ЧПОК', en: 'POP' },
-  zan: { jp: 'ザンッ', ru: 'ВЖЖЖ', en: 'ZAN' },
-  chin: { jp: 'チン', ru: 'КЛАЦ', en: 'CHING' },
-  xcut: { jp: 'ズバババッ', ru: 'ХРЯСЬ', en: 'SHRAK' },
-  thud: { jp: 'ドスッ', ru: 'ТУК', en: 'THUD' },
-};

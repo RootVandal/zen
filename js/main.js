@@ -42,6 +42,7 @@ if (!G || !ST) {
     phone: 'not all and (min-width: 1024px) and (pointer: fine)',
   }, (ctx) => {
     const desktop = !!ctx.conditions.desktop;
+    document.documentElement.classList.toggle('fine', desktop);
     if (env.calm) {
       // calm mode: static aftermath frames, only the FAQ pop remains (and it is skipped too)
       return () => {};
@@ -53,7 +54,7 @@ if (!G || !ST) {
       const tick = (t) => lenis?.raf(t * 1000);
       G.ticker.add(tick);
       G.ticker.lagSmoothing(0);
-      kills.push(() => { G.ticker.remove(tick); lenis?.destroy(); lenis = null; });
+      kills.push(() => { G.ticker.remove(tick); G.ticker.lagSmoothing(500, 33); lenis?.destroy(); lenis = null; });
     }
     const opts = { desktop, loaderDone };
     const scenes = [cover, about, works, prices, process, faq, duel, back];

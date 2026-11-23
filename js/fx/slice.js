@@ -153,6 +153,7 @@ export function createSlash(opts) {
   const layers = o.layers.map((l) => (l.nodeType ? { el: l, depth: 1 } : l));
   let pieces = [];
   let tl = null;
+  let trailTls = [];
   let state = 'idle'; // idle | prepared | cut
   const api = { fallTl: null, pieces, state: () => state };
 
@@ -217,6 +218,7 @@ export function createSlash(opts) {
         }
         const fall = document.createElement('div');
         fall.className = 'slice-fall';
+        fall.style.contain = 'paint';
         fall.setAttribute('aria-hidden', 'true');
         fall.style.cssText = `left:${left}px;top:${top}px;width:${W}px;height:${H}px;visibility:hidden;transform-origin:${c[0].toFixed(1)}px ${c[1].toFixed(1)}px;${z !== 'auto' ? `z-index:${z};` : ''}`;
         const slip = document.createElement('div');
@@ -291,8 +293,10 @@ export function createSlash(opts) {
     const hs = o.hitStop / 1000;
     const slipDur = o.slipDur ?? 0.16;
     tl = G.timeline({ onComplete: resolve });
-    tl.add(trail(api.seg[0], api.seg[1], o.trail), 0);
-    if (o.second) tl.add(trail(api.seg2[0], api.seg2[1], o.trail), (o.second.delay || 120) / 1000);
+    const t1 = trail(api.seg[0], api.seg[1], o.trail);
+    trailTls.push(t1);
+    tl.add(t1, 0);
+    if (o.second) { const t2 = trail(api.seg2[0], api.seg2[1], o.trail); trailTls.push(t2); tl.add(t2, (o.second.delay || 120) / 1000); }
     const swapAt = o.second ? T + (o.second.delay || 120) / 1000 : T;
     tl.call(() => {
       show();
@@ -325,6 +329,8 @@ export function createSlash(opts) {
   api.reset = () => {
     tl?.kill();
     tl = null;
+    trailTls.forEach((t) => t.progress(1));
+    trailTls = [];
     api.fallTl?.kill();
     api.fallTl = null;
     for (const q of pieces) q.fall.remove();

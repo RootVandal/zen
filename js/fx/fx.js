@@ -7,7 +7,8 @@ const gsap = () => window.gsap;
 /* ======================= Kanji flash and seal stamps ======================= */
 /* A brush kanji flashes over the cut, like a title card in a samurai film. */
 export function kanjiFlash(host, ch, { x = '50%', y = '50%', size = 260, hold = 0.35 } = {}) {
-  if (!host || env.calm) return null;
+  // switched off: the audience prefers a calmer page
+  if (!host || env.calm || !kanjiFlash.on) return null;
   const G = gsap();
   const el = document.createElement('span');
   el.className = 'kflash';
@@ -48,7 +49,8 @@ const flashTimes = [];
 
 /* A short white flash over one section (never the full page). */
 export function impact(host, point, kind = 'white') {
-  if (env.calm || !host) return;
+  // switched off: no flashes
+  if (env.calm || !host || !impact.on) return;
   const now = performance.now();
   while (flashTimes.length && now - flashTimes[0] > 1000) flashTimes.shift();
   if (flashTimes.length >= 3) return;
@@ -70,7 +72,8 @@ export function impact(host, point, kind = 'white') {
 }
 
 export function shake(el, amp = 4) {
-  if (env.calm || env.phone || !el) return;
+  // switched off: no screen shake
+  if (env.calm || env.phone || !el || !shake.on) return;
   const G = gsap();
   G.fromTo(el, { x: -amp }, { x: amp, duration: 0.025, repeat: 5, yoyo: true, ease: 'none', onComplete: () => G.set(el, { x: 0 }) });
 }
@@ -78,7 +81,9 @@ export function shake(el, amp = 4) {
 /* ======================= Particles ======================= */
 /* points: viewport coords along which particles spawn. */
 export function burst(host, { points, count = 40, colors = ['#0B0A0C'], life = 0.9, gravity = 900, speed = [160, 520], size = [2, 7], dots = false } = {}) {
-  if (env.calm || !host || !points?.length) return;
+  // switched off: no particle bursts
+  if (env.calm || !host || !points?.length || !burst.on) return;
+  if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
   if (env.phone) count = Math.ceil(count / 2);
   const r = host.getBoundingClientRect();
   const cv = document.createElement('canvas');
