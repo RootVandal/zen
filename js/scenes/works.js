@@ -17,7 +17,7 @@ function noren(art, kanji, desktop) {
   el.innerHTML = `<div class="noren__rod"></div><div class="noren__flaps">${
     Array.from({ length: count }, (_, i) => {
       const ci = slots.indexOf(i);
-      return `<div class="noren__flap"><div class="noren__stub"></div><div class="noren__body">${ci >= 0 ? `<span>${chars[ci]}</span>` : ''}</div></div>`;
+      return `<div class="noren__flap"><div class="noren__stub"></div><div class="noren__body">${ci >= 0 && chars[ci] ? `<span>${chars[ci]}</span>` : ''}</div></div>`;
     }).join('')
   }</div>`;
   art.append(el);
