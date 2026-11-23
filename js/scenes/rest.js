@@ -1,8 +1,8 @@
 /* Prices, process, FAQ, the duel, the back cover and the credits. */
-import { env, $, $$ } from '../core/env.js';
-import { createSlash, trail } from '../fx/slice.js';
-import { kanjiFlash, impact, shake, burst, sound } from '../fx/fx.js';
-import { createPetals } from '../fx/petals.js';
+import { env, $, $$ } from '../core/env.js?v=77de92fa';
+import { createSlash, trail } from '../fx/slice.js?v=77de92fa';
+import { kanjiFlash, impact, shake, burst, sound } from '../fx/fx.js?v=77de92fa';
+import { createPetals } from '../fx/petals.js?v=77de92fa';
 
 const gsap = () => window.gsap;
 const NS = 'http://www.w3.org/2000/svg';

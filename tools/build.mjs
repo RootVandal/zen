@@ -142,3 +142,25 @@ for (const [name, fn] of Object.entries(blocks)) {
 }
 writeFileSync(html, page);
 console.log('index.html updated');
+
+// cache busting: one version for all css/js, so browsers never mix old and new files
+{
+  const { createHash } = await import('node:crypto');
+  const files = ['css/tokens.css', 'css/base.css', 'css/sections.css', 'js/main.js', 'js/data.js', 'js/data/en.js',
+    'js/core/env.js', 'js/core/i18n.js', 'js/fx/fx.js', 'js/fx/slice.js', 'js/fx/petals.js', 'js/ui/ui.js',
+    'js/scenes/cover.js', 'js/scenes/works.js', 'js/scenes/rest.js'];
+  const strip = (s) => s.replace(/\?v=[0-9a-f]+/g, '');
+  const hash = createHash('sha1');
+  for (const f of files) hash.update(strip(readFileSync(join(root, f), 'utf8')));
+  const v = hash.digest('hex').slice(0, 8);
+  for (const f of files.filter((f) => f.endsWith('.js'))) {
+    const p = join(root, f);
+    const s = readFileSync(p, 'utf8');
+    const out = strip(s).replace(/(from\s+'\.{1,2}\/[^']+\.js)'/g, `$1?v=${v}'`).replace(/(import\('\.{1,2}\/[^']+\.js)'/g, `$1?v=${v}'`);
+    if (out !== s) writeFileSync(p, out);
+  }
+  let pg = readFileSync(html, 'utf8');
+  pg = strip(pg).replace(/(href="css\/[\w-]+\.css)"/g, `$1?v=${v}"`).replace(/(src="js\/main\.js)"/, `$1?v=${v}"`);
+  writeFileSync(html, pg);
+  console.log('version', v);
+}

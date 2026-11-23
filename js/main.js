@@ -1,11 +1,11 @@
 /* AXIOMA · Vol. 1 — boot. Content is readable without any of this. */
-import { env, $ } from './core/env.js';
-import { initI18n, onLang } from './core/i18n.js';
-import { refreshSfx } from './fx/fx.js';
-import { runLoader, initHeader, initToggles, initPointer, initProgress, initSheet } from './ui/ui.js';
-import { cover, about } from './scenes/cover.js';
-import { works } from './scenes/works.js';
-import { prices, process, faq, duel, back } from './scenes/rest.js';
+import { env, $ } from './core/env.js?v=77de92fa';
+import { initI18n, onLang } from './core/i18n.js?v=77de92fa';
+import { refreshSfx } from './fx/fx.js?v=77de92fa';
+import { runLoader, initHeader, initToggles, initPointer, initProgress, initSheet } from './ui/ui.js?v=77de92fa';
+import { cover, about } from './scenes/cover.js?v=77de92fa';
+import { works } from './scenes/works.js?v=77de92fa';
+import { prices, process, faq, duel, back } from './scenes/rest.js?v=77de92fa';
 
 const G = window.gsap;
 const ST = window.ScrollTrigger;

@@ -1,6 +1,6 @@
 /* Small effects shared by every scene: SFX lettering, impact frames,
    shake, ink particles and the optional synthesized sound. */
-import { env } from '../core/env.js';
+import { env } from '../core/env.js?v=77de92fa';
 
 const gsap = () => window.gsap;
 

@@ -1,8 +1,8 @@
 /* Cover (the first cut), contents under-layer, chapter 1 gutter cut. */
-import { env, $, $$ } from '../core/env.js';
+import { env, $, $$ } from '../core/env.js?v=77de92fa';
 
-import { sound } from '../fx/fx.js';
-import { createPetals } from '../fx/petals.js';
+import { sound } from '../fx/fx.js?v=77de92fa';
+import { createPetals } from '../fx/petals.js?v=77de92fa';
 
 const gsap = () => window.gsap;
 let introPlayed = false;

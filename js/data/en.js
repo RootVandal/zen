@@ -1,6 +1,6 @@
 /* English dictionary. Russian lives in index.html; work, price, step and FAQ
    texts come from js/data.js so both languages stay in one place. */
-import { LINKS, PRICES, HONESTY, WORKS, STEPS, FAQ, CODE } from '../data.js';
+import { LINKS, PRICES, HONESTY, WORKS, STEPS, FAQ, CODE } from '../data.js?v=77de92fa';
 
 const fill = (s) => s.replaceAll('{request}', LINKS.request.en).replaceAll('{telegram}', LINKS.telegram);
 

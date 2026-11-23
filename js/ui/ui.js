@@ -1,10 +1,10 @@
 /* Interface: loader, header, drawer, toggles, cursor, ink click,
    progress katana, HUD timecode, phone sheet, paper grain. */
-import { env, $, $$, store } from '../core/env.js';
-import { t, textOf, onLang } from '../core/i18n.js';
-import { trail } from '../fx/slice.js';
-import { sound } from '../fx/fx.js';
-import { WORKS } from '../data.js';
+import { env, $, $$, store } from '../core/env.js?v=77de92fa';
+import { t, textOf, onLang } from '../core/i18n.js?v=77de92fa';
+import { trail } from '../fx/slice.js?v=77de92fa';
+import { sound } from '../fx/fx.js?v=77de92fa';
+import { WORKS } from '../data.js?v=77de92fa';
 
 const gsap = () => window.gsap;
 const h = document.documentElement;

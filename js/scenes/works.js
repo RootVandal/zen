@@ -1,8 +1,8 @@
 /* Works: each colour plate is opened by a cut, then the live site scrolls in its frame. */
-import { env, $, $$, near } from '../core/env.js';
-import { createSlash, trail } from '../fx/slice.js';
-import { stamp, impact, sound } from '../fx/fx.js';
-import { WORKS } from '../data.js';
+import { env, $, $$, near } from '../core/env.js?v=77de92fa';
+import { createSlash, trail } from '../fx/slice.js?v=77de92fa';
+import { stamp, impact, sound } from '../fx/fx.js?v=77de92fa';
+import { WORKS } from '../data.js?v=77de92fa';
 
 const gsap = () => window.gsap;
 const byKey = Object.fromEntries(WORKS.map((w) => [w.key, w]));

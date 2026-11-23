@@ -1,7 +1,7 @@
 /* RU <-> EN. Russian is the HTML itself; English comes from data/en.js.
    On the first switch the Russian strings are cached from the DOM. */
-import { EN } from '../data/en.js';
-import { env, $$, store } from './env.js';
+import { EN } from '../data/en.js?v=77de92fa';
+import { env, $$, store } from './env.js?v=77de92fa';
 
 const h = document.documentElement;
 const RU = new Map();
