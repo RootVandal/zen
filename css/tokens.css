@@ -1,0 +1,33 @@
+/* Design tokens: ink, washi white, blood red, sakura pink. */
+:root {
+  --ink: #0B0A0C;
+  --ink-2: #121013;
+  --ink-3: #1B171A;
+  --ink-4: #2A2326;
+  --paper: #F4EFEA;
+  --muted: rgba(244, 239, 234, .64);
+  --faint: rgba(244, 239, 234, .4);
+  --line: rgba(244, 239, 234, .14);
+  --line-2: rgba(244, 239, 234, .28);
+  --red: #E5122A;
+  --red-deep: #9E0B1C;
+  --red-hot: #FF2A44;
+  --red-glow: rgba(229, 18, 42, .35);
+  --pink: #FF8FB1;
+  --pink-soft: #FFC2D3;
+
+  --serif: "Cormorant Garamond", "Times New Roman", serif;
+  --sc: "Cormorant SC", "Cormorant Garamond", serif;
+  --sans: Onest, system-ui, "Segoe UI", Roboto, sans-serif;
+  --brush: "Yuji Mai", "Hiragino Mincho ProN", "Yu Mincho", serif;
+
+  --gutter: clamp(20px, 5vw, 96px);
+  --header-h: 72px;
+  --wrap: 1320px;
+  --cut: 14px;                 /* the sliced corner on buttons and plates */
+  --ease-blade: cubic-bezier(.7, 0, .2, 1);
+}
+
+@media (max-width: 767px) {
+  :root { --header-h: 60px; --cut: 10px; }
+}

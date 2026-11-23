@@ -1,0 +1,6 @@
+{
+  "name": "axioma-katana-portfolio",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "node tools/build.mjs", "ink": "python -I tools/make-ink.py assets/shots" }
+}
