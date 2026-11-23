@@ -2,7 +2,7 @@
 import { env, $ } from './core/env.js';
 import { initI18n, onLang } from './core/i18n.js';
 import { refreshSfx } from './fx/fx.js';
-import { runLoader, initHeader, initToggles, initPointer, initProgress, initSheet, paperGrain } from './ui/ui.js';
+import { runLoader, initHeader, initToggles, initPointer, initProgress, initSheet } from './ui/ui.js';
 import { cover, about } from './scenes/cover.js';
 import { works } from './scenes/works.js';
 import { prices, process, faq, duel, back } from './scenes/rest.js';
@@ -26,7 +26,7 @@ if (!G || !ST) {
   if (window.DrawSVGPlugin) G.registerPlugin(ST, window.DrawSVGPlugin);
   else G.registerPlugin(ST);
   ST.config({ ignoreMobileResize: true });
-  paperGrain();
+
 
   const loaderDone = env.calm ? Promise.resolve(false) : runLoader();
   if (env.calm) $('.loader')?.classList.add('is-done');
